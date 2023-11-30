@@ -8,6 +8,8 @@ urlpatterns = [
     path('login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('company/register/', views.CompanyRegisterView.as_view(),
          name='company_register'),
-    path('jobsearcher/register/', views.JobSearcherRegisterView.as_view(),
-         name='jobsearcher_register')
+    path('company/register/verify/', views.CompanyRegisterVerify.as_view()),
+    path('jobsearcher/register/', views.JobSearcherRegisterView.as_view()),
+    path('jobsearcher/register/verify/', views.JobSearcherVerifyView.as_view()),
+
 ]

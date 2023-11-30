@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.core.validators import RegexValidator
 
 from .managers import UserManager
 from utils.models import TimeStampModel
@@ -9,7 +10,13 @@ from common.models import Activity, District, CompanyType, Employee, Skill, Driv
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    phone_number = models.CharField(max_length=50, unique=True)
+    _validate_phone = RegexValidator(
+        regex=r'^998[0-9]{9}$',
+        message="Telefon raqamingiz 9 bilan boshlanishi va 12 ta belgidan iborat bo'lishi kerak. Masalan: 998901235476"
+    )
+    phone_number = models.CharField(
+        max_length=50, unique=True, validators=[_validate_phone]
+    )
     email = models.EmailField(blank=True, null=True)
 
     is_admin = models.BooleanField(default=False)
@@ -31,6 +38,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def is_staff(self):
         return self.is_admin
+
+    @classmethod
+    def is_phone_number_available(cls, phone_number):
+        if cls.objects.filter(phone_number=phone_number).exists():
+            return True
+        return False
 
 
 class CompanyProfile(TimeStampModel, User):
@@ -68,10 +81,18 @@ class CurrencyChoice(models.Choices):
 
 class JobSearcherProfile(User, TimeStampModel):
     # Relations
-    district = models.ForeignKey(District, on_delete=models.CASCADE)
-    activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
-    skills = models.ManyToManyField(Skill)
-    driver_license = models.ManyToManyField(DriverLicense)
+    district = models.ForeignKey(
+        District, on_delete=models.CASCADE, blank=True, null=True
+    )
+    activity = models.ForeignKey(
+        Activity, on_delete=models.CASCADE, blank=True, null=True
+    )
+    skills = models.ManyToManyField(
+        Skill, blank=True
+    )
+    driver_license = models.ManyToManyField(
+        DriverLicense, blank=True
+    )
 
     # Fields
     full_name = models.CharField(max_length=255)
