@@ -153,4 +153,14 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.ScopedRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'company_register': '5/hour',
+        'company_register_verify': '5/hour',
+        'jobsearcher_register': '5/hour',
+        'jobsearcher_register_verify': '5/hour',
+        'login': "10/hour"
+    }
 }

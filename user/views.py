@@ -14,11 +14,13 @@ from user.generators import sms_code_generate, session_token_generate
 class MyObtainTokenPairView(TokenObtainPairView):
     permission_classes = (AllowAny,)
     serializer_class = MyTokenObtainPairSerializer
+    throttle_scope = 'login'
 
 
 class CompanyRegisterView(generics.GenericAPIView):
     # queryset = CompanyProfile.objects.all()
     serializer_class = CompanyRegisterSerializer
+    throttle_scope = 'company_register'
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -59,6 +61,7 @@ class CompanyRegisterView(generics.GenericAPIView):
 
 class CompanyRegisterVerify(generics.GenericAPIView):
     serializer_class = CompanyRegisterVerifySerailizer
+    throttle_scope = 'company_register_verify'
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -91,8 +94,12 @@ class CompanyRegisterVerify(generics.GenericAPIView):
         all_data = cache.get(session, None)
         try:
             company = CompanyProfile(**all_data)
+            company.set_password(all_data['password'])
             company.save()
-            data.update({'success': True})
+            data = {
+                'message': _("Successfully created!"),
+                'success': True,
+            }
             return Response(data=data, status=status.HTTP_201_CREATED)
         except:
             data = {
@@ -104,6 +111,7 @@ class CompanyRegisterVerify(generics.GenericAPIView):
 
 class JobSearcherRegisterView(generics.GenericAPIView):
     serializer_class = JobSearcherProfileSerializer
+    throttle_scope = 'jobsearcher_register'
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -143,6 +151,7 @@ class JobSearcherRegisterView(generics.GenericAPIView):
 
 class JobSearcherVerifyView(generics.GenericAPIView):
     serializer_class = JobSearcherVerifySerailizer
+    throttle_scope = 'jobsearcher_register_verify'
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -176,6 +185,7 @@ class JobSearcherVerifyView(generics.GenericAPIView):
 
         try:
             job_searcher = JobSearcherProfile(**all_data)
+            job_searcher.set_password(all_data['password'])
             job_searcher.save()
             data = {
                 'message': _("Successfully created"),
