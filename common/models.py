@@ -38,7 +38,7 @@ class MediaType(TimeStampModel):
 class SocialMedia(TimeStampModel):
     url = models.URLField()
     user = models.ForeignKey('user.JobSearcherProfile',
-                             on_delete=models.CASCADE)
+                             on_delete=models.CASCADE, related_name='social_medias')
     media_type = models.ForeignKey(MediaType, on_delete=models.CASCADE)
 
 

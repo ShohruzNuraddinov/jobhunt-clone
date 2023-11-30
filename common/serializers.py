@@ -8,7 +8,7 @@ class LanguageSerializer(serializers.ModelSerializer):
         model = Language
         fields = [
             'id',
-            'user',
+            # 'user',
             'language',
             'degree'
         ]
@@ -42,4 +42,14 @@ class ExperienceSerializer(serializers.ModelSerializer):
             'finish_month',
             'finish_year',
             'about',
+        ]
+
+
+class SocialMediaSerailzier(serializers.ModelSerializer):
+    class Meta:
+        model = SocialMedia
+        fields = [
+            'id',
+            'url',
+            'media_type',
         ]

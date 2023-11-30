@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .models import CompanyProfile, JobSearcherProfile
-from common.serializers import EducationSeriazlizer, LanguageSerializer, ExperienceSerializer
+from common.serializers import EducationSeriazlizer, LanguageSerializer, ExperienceSerializer, SocialMediaSerailzier
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -79,10 +79,17 @@ class JobSearcherProfileSerializer(serializers.ModelSerializer):
         write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
 
+    # educations = EducationSeriazlizer()
+    # languages = LanguageSerializer()
+    # experiences = ExperienceSerializer()
+    # social_medias = SocialMediaSerailzier()
+
     class Meta:
         model = JobSearcherProfile
         fields = (
             'phone_number',
+            'password',
+            'password2',
             'email',
             'full_name',
             'gender',
@@ -95,11 +102,12 @@ class JobSearcherProfileSerializer(serializers.ModelSerializer):
             'activity',
             'skills',
             'driver_license',
+
             # 'educations',
             # 'languages',
             # 'experiences',
-            'password',
-            'password2',
+            # 'social_medias'
+
         )
         extra_kwargs = {
             'full_name': {'required': True},
@@ -136,9 +144,14 @@ class JobSearcherProfileSerializer(serializers.ModelSerializer):
             is_freelancer=validated_data['is_freelancer'],
             district=validated_data['district'],
             activity=validated_data['activity'],
-            skills=validated_data['skills'],
-            driver_license=validated_data['driver_license'],
+            # skills=validated_data['skills'],
         )
+
+        for driver_licence in validated_data['driver_license']:
+            job_searcher.driver_license.add(driver_licence)
+
+        for skill in validated_data['skills']:
+            job_searcher.skills.add(skill)
 
         job_searcher.set_password(validated_data['password'])
         job_searcher.save()
