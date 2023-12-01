@@ -14,7 +14,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super(MyTokenObtainPairSerializer, cls).get_token(user)
 
-        # Add custom claims
         token['phone_number'] = user.phone_number
         return token
 
@@ -39,10 +38,6 @@ class CompanyRegisterSerializer(serializers.ModelSerializer):
             # 'district',
             'password',
         )
-        # extra_kwargs = {
-        #     'title': {'required': True},
-        #     'legal_name': {'required': True}
-        # }
 
     def validate(self, attrs):
         phone_number = attrs.get('phone_number', None)
@@ -115,33 +110,6 @@ class JobSearcherProfileSerializer(serializers.ModelSerializer):
                 )
 
         return attrs
-
-    # def create(self, validated_data):
-    #     job_searcher = JobSearcherProfile.objects.create(
-    #         phone_number=validated_data['phone_number'],
-    #         email=validated_data['email'],
-    #         full_name=validated_data['full_name'],
-    #         gender=validated_data['gender'],
-    #         bithed_date=validated_data['bithed_date'],
-    #         about=validated_data['about'],
-    #         salary=validated_data['salary'],
-    #         currency=validated_data['currency'],
-    #         is_freelancer=validated_data['is_freelancer'],
-    #         district=validated_data['district'],
-    #         activity=validated_data['activity'],
-    #         # skills=validated_data['skills'],
-    #     )
-
-    #     for driver_licence in validated_data['driver_license']:
-    #         job_searcher.driver_license.add(driver_licence)
-
-    #     for skill in validated_data['skills']:
-    #         job_searcher.skills.add(skill)
-
-    #     job_searcher.set_password(validated_data['password'])
-    #     job_searcher.save()
-
-    #     return job_searcher
 
 
 class JobSearcherVerifySerailizer(serializers.Serializer):
